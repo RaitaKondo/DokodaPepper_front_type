@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+// index.tsx
+import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrapを全体に適用
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
