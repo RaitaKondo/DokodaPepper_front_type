@@ -12,7 +12,7 @@ const Home: React.FC = () => {
 
   const fetchPost = async () => {
     try {
-      const response = await axios.get<Post[]>('http://localhost:8080/api/getForTop');
+      const response = await axios.get<Post[]>('http://localhost:8080/api/all');
       console.log(response.data);
       setPosts(response.data);
     } catch (error) {
@@ -44,7 +44,7 @@ const chunks = chunkArray(posts, 3); // 3枚ずつ分割
 
 
   return (
-    <div className="card" style={{ width: '60vw' }}>
+    <div className="card" style={{ width: '80vw', border: 'none' }}>
       {/* {post.images.length > 0 && (
         <img src={post.images[0].imageUrl} className="card-img-top" alt="投稿画像" />
       )} */}
@@ -52,19 +52,13 @@ const chunks = chunkArray(posts, 3); // 3枚ずつ分割
       <div className="container mt-4 ">
         <h1 className="text-center mb-4">最新投稿</h1>
 
-        <Carousel interval={null}>
-        {chunks.map((group, index) => (
-          <Carousel.Item key={index}>
-            <div className="row justify-content-center">
-              {group.map((post) => (
-                <div className="col-md-4 d-flex justify-content-center" key={post.id}>
-                  <PostCard post={post} />
-                </div>
-              ))}
+        <div className="row">
+          {posts.map((post) => (
+            <div className="col-md-4 mb-4 d-flex justify-content-center" key={post.id}>
+              <PostCard post={post} />
             </div>
-          </Carousel.Item>
-        ))}
-      </Carousel>
+          ))}
+        </div>
 
     </div>
     {/* <button onClick={fetchPost}>再読み込み</button> */}
