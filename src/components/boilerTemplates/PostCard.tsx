@@ -1,6 +1,5 @@
 import React from 'react';
 import { Post } from '../types/Types';
-import { Link } from 'react-router-dom';
 
 interface PostCardProps {
   post: Post;
@@ -8,9 +7,9 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
   return (
-    <div className="card" style={{ width: '18rem', margin: '1rem' }}>
+    <div className="card" style={{ margin: '1rem' }}>
+    {/* <div className="card d-flex flex-row" style={{ margin: '1rem', width: '100%' }}> */}
       {post.images.length > 0 && (
-        // <img src={post.images[0].imageUrl} className="card-img-top" alt="投稿画像" />
         <img src={post.images[0].imageUrl} className="card-img-top" alt="投稿画像" />
       )}
       <div className="card-body">
