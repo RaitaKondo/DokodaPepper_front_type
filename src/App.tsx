@@ -14,7 +14,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/logout" element={<Logout />} />
-        {/* <Route path="/posts/:id" element={<PostDetail />} /> */}
+        {/* <Route path="/post_new" element={<PostDetail />} /> */}
       </Routes>
 
       </ Layout>

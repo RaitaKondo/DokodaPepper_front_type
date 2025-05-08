@@ -5,16 +5,20 @@ import PostCard from './boilerTemplates/PostCard';
 import { User } from './types/Types';
 import { Post } from './types/Types';
 import { Carousel } from 'react-bootstrap';
+import { PageResponse } from './types/Types';
 
 const Home: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
-  const fetchPost = async () => {
+  const fetchPost = async (page: number) => {
     try {
-      const response = await axios.get<Post[]>('http://localhost:8080/api/all');
-      console.log(response.data);
-      setPosts(response.data);
+      const response = await axios.get<PageResponse<Post>>('http://localhost:8080/api/posts?page=' + page);
+      console.log(response.data.content);
+      setPosts(response.data.content);
+      setTotalPages(response.data.totalPages); // 総ページ数を取得
     } catch (error) {
       console.error('投稿データの取得に失敗しました:', error);
     } finally {
@@ -24,8 +28,8 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);   // ローディング画面を再表示
-    fetchPost();
-  }, []);
+    fetchPost(page);
+  }, [page]);
 
   // 3件ずつ分割する関数
 const chunkArray = (arr: Post[], size: number): Post[][] => {
@@ -62,8 +66,13 @@ const chunks = chunkArray(posts, 3); // 3枚ずつ分割
 
     </div>
     {/* <button onClick={fetchPost}>再読み込み</button> */}
-
+    <div>
+    <button disabled={page === 0} onClick={() => setPage(page - 1)}>前</button>
+        <span>{page + 1} / {totalPages}</span>
+        <button disabled={page + 1 >= totalPages} onClick={() => setPage(page + 1)}>次</button>
       </div>
+      </div>
+      
     </div>
   );
 };

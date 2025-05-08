@@ -28,4 +28,12 @@ export interface Image {
     updatedAt: string;
     images: Image[];
   }
+
+  export interface PageResponse<T> {
+    content: T[];
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number;
+  }
   
