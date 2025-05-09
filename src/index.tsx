@@ -6,7 +6,8 @@ import reportWebVitals from './reportWebVitals';
 // index.tsx
 import { BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrapを全体に適用
-
+import axios from 'axios';
+axios.defaults.withCredentials = true; // ←これ！！
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
