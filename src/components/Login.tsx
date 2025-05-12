@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from './AuthContext';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { setIsAuthenticated } = useAuthContext();
 
   const handleLogin = async () => {
     try {
@@ -16,6 +18,7 @@ const LoginPage: React.FC = () => {
       );
       console.log("ログイン成功、遷移待機中...");
 setTimeout(() => {
+  setIsAuthenticated(true);
   console.log("トップページへ遷移");
   navigate('/');
 }, 200); // ログイン成功時にトップページへ

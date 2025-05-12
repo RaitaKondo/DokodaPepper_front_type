@@ -1,18 +1,15 @@
-// LogoutButton.tsx
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from './AuthContext';
 
 const Logout: React.FC = () => {
   const navigate = useNavigate();
+  const { setIsAuthenticated } = useAuthContext();
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        'http://localhost:8080/api/logout',
-        {}, // ボディは空でOK
-        { withCredentials: true } // セッションCookie送信
-      );
-      // ログアウト成功 → ログインページへ遷移
+      await axios.post('http://localhost:8080/api/logout', {}, { withCredentials: true });
+      setIsAuthenticated(false);
       navigate('/login');
     } catch (err) {
       alert('ログアウトに失敗しました');
