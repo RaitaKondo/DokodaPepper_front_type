@@ -16,7 +16,8 @@ const Home: React.FC = () => {
   const fetchPost = async (page: number) => {
     try {
       const response = await axios.get<PageResponse<Post>>('http://localhost:8080/api/posts?page=' + page);
-      console.log(response.data.content);
+      // console.log(response.data.content);
+      console.log(response);
       setPosts(response.data.content);
       setTotalPages(response.data.totalPages); // 総ページ数を取得
     } catch (error) {
@@ -32,15 +33,15 @@ const Home: React.FC = () => {
   }, [page]);
 
   // 3件ずつ分割する関数
-const chunkArray = (arr: Post[], size: number): Post[][] => {
-  const result: Post[][] = [];
-  for (let i = 0; i < arr.length; i += size) {
-    result.push(arr.slice(i, i + size));
-  }
-  return result;
-};
+// const chunkArray = (arr: Post[], size: number): Post[][] => {
+//   const result: Post[][] = [];
+//   for (let i = 0; i < arr.length; i += size) {
+//     result.push(arr.slice(i, i + size));
+//   }
+//   return result;
+// };
 
-const chunks = chunkArray(posts, 3); // 3枚ずつ分割
+// const chunks = chunkArray(posts, 3); // 3枚ずつ分割
 
   if (loading) return <div>読み込み中...</div>;
   if (posts.length === 0) return <div>投稿が見つかりません</div>;

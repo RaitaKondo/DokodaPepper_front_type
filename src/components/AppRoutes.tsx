@@ -11,6 +11,7 @@ import ProtectedRoute from './ProtectedRoute';
 import { useAuth } from './logics/useAuth';
 import NotFound from './NotFound';
 import { useAuthContext } from './AuthContext';
+import NewPostForm from './NewPostForm';
 
 const AppRoutes: React.FC = () => {
   const {isAuthenticated} = useAuthContext();
@@ -34,9 +35,10 @@ const AppRoutes: React.FC = () => {
 
         <Route path="/post_new" element={
           < ProtectedRoute >
-          <NewPost /> 
+          <NewPostForm /> 
           </ProtectedRoute>
         }/>
+
 
         <Route path="/logout" element={
                     < ProtectedRoute >

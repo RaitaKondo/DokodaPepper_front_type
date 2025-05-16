@@ -1,12 +1,6 @@
-export interface Image {
-    id: number;
-    imageUrl: string;
-    sortOrder: number;
-    createdAt: string;
-    updatedAt: string;
-  }
+
   
-  export interface Area {
+  export interface City {
     id: number;
     name: string;
   }
@@ -19,15 +13,31 @@ export interface Image {
     updated_at: string;
   }
   
-  export interface Post {
+// types/Types.ts
+export interface PostImage {
+  id: number;
+  imageUrl: string;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Post {
+  id: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  user: {
     id: number;
-    user: User;
-    area: Area;
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-    images: Image[];
-  }
+    username: string;
+  };
+  city: {
+    id: number;
+    name: string;
+  };
+  images: PostImage[]; // ← ここを追加
+}
+
 
   export interface PageResponse<T> {
     content: T[];
