@@ -47,3 +47,10 @@ export interface Post {
     number: number;
   }
   
+  export type Pref = { id: number; name: string };
+
+  export type PrefContextType = {
+  prefs: Pref[];
+  isLoading: boolean;
+  isError: boolean;
+};
