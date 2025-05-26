@@ -41,6 +41,9 @@ const NewPostForm: React.FC = () => {
   const [cityName, setCityName] = useState("");
   const [banchiName, setBanchiName] = useState("");
 
+  const [geoPrefName, setGeoPrefName] = useState("");
+  const [geoCityName, setGeoCityName] = useState("");
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
   });
@@ -91,15 +94,46 @@ const NewPostForm: React.FC = () => {
       .finally(() => setCitiesLoading(false));
   }, [selectedPrefId]);
 
+  useEffect(() => {
+    if (selectedPrefId !== "" && !citiesLoading && geoCityName) {
+      const matchedCity = cities.find((c) => c.name === geoCityName);
+      if (matchedCity) {
+        setSelectedCityId(matchedCity.id);
+        setCityName(matchedCity.name);
+      }
+    }
+  }, [cities, citiesLoading, geoCityName, selectedPrefId]);
+
   // Last,lngから住所を取得するして表示用アドレス欄にセットする関数
   const geocodeLatLng = async (lat: number, lng: number) => {
     const res = await axios.get(
       `http://localhost:8080/api/geocode?lat=${lat}&lng=${lng}`
     );
     const formatted = res.data.results[0]?.formatted_address;
+    console.log(res);
     if (formatted) {
       const match = formatted.match(/(?:日本、)?(?:〒\d{3}-\d{4}\s)?(.+)/);
       setAddress(match ? match[1] : formatted);
+
+      const prefTemp = res.data.results[0].address_components.find(
+        (comp: any) => comp.types.includes("administrative_area_level_1")
+      );
+      console.log(prefTemp);
+      const cityTemp = res.data.results[0].address_components.find(
+        (comp: any) =>
+          comp.types.includes("locality") ||
+          comp.types.includes("administrative_area_level_2")
+      );
+      console.log(cityTemp);
+      setGeoPrefName(prefTemp?.long_name ?? "");
+      setGeoCityName(cityTemp?.long_name ?? "");
+
+      const matchedPref = prefs.find((p) => p.name === prefTemp.long_name);
+      console.log(matchedPref);
+      if (matchedPref) {
+        setPrefName(matchedPref.name);
+        setSelectedPrefId(matchedPref.id);
+      }
     } else {
       setAddress("住所不明");
     }

@@ -19,7 +19,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         )}
         <div className="card-body">
           <h5 className="card-title">{post.city.name}</h5>
-          <p className="card-text">{post.user.username}</p>
+          <p className="card-text">{post.userName}</p>
           <p className="card-text">
             <small className="text-muted">
               投稿日: {new Date(post.createdAt).toLocaleString()}

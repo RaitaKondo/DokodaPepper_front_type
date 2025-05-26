@@ -22,22 +22,34 @@ export interface PostImage {
   updatedAt: string;
 }
 
+// export interface Post {
+//   id: number;
+//   content: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   user: {
+//     id: number;
+//     username: string;
+//   };
+//   city: {
+//     id: number;
+//     name: string;
+//   };
+//   images: PostImage[]; // ← ここを追加
+// }
 export interface Post {
   id: number;
   content: string;
   createdAt: string;
   updatedAt: string;
-  user: {
-    id: number;
-    username: string;
-  };
+  userName: string; 
   city: {
     id: number;
     name: string;
   };
   images: PostImage[]; // ← ここを追加
+  prefectureName: string; // 追加
 }
-
 
   export interface PageResponse<T> {
     content: T[];
