@@ -36,6 +36,15 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
+            path="/posts/:id"
+            element={
+              <ProtectedRoute>
+                <PostDetail />
+              </ProtectedRoute>
+            }
+          />
+          {/* ←これが対応するルート */}
+          <Route
             path="/post_new"
             element={
               <ProtectedRoute>

@@ -38,11 +38,14 @@ export interface PostImage {
 //   images: PostImage[]; // ← ここを追加
 // }
 export interface Post {
-  id: number;
+  postId: number;
   content: string;
   createdAt: string;
   updatedAt: string;
   userName: string; 
+  latitude:number;
+  longitude:number;
+  address:string;
   city: {
     id: number;
     name: string;

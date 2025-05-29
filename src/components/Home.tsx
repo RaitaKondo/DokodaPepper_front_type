@@ -62,7 +62,7 @@ const Home: React.FC = () => {
             {posts.map((post) => (
               <div
                 className="col-md-4 mb-4 d-flex justify-content-center"
-                key={post.id}
+                key={post.postId}
               >
                 <PostCard post={post} />
               </div>

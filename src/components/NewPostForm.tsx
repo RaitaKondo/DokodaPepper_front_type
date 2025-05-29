@@ -255,8 +255,8 @@ const NewPostForm: React.FC = () => {
             )}
           </GoogleMap>
 
-          <div className="mt-3 d-flex">
-            <form>
+          <div className="mt-3 d-flex flex-wrap gap-2 align-items-center">
+            <form className="d-flex flex-wrap gap-2 align-items-center">
               <label>
                 都道府県
                 <select
@@ -266,10 +266,11 @@ const NewPostForm: React.FC = () => {
                     setSelectedPrefId(Number(e.target.value));
                     const name = e.target.options[e.target.selectedIndex].text;
                     setPrefName(name);
-                    setGeoCityName(""); // ← これを追加してuseEffectを止める
+                    setGeoCityName("");
                     setSelectedCityId(null);
                     setCityName("");
                   }}
+                  className="form-select"
                 >
                   <option value="" disabled>
                     選択してください
@@ -290,6 +291,7 @@ const NewPostForm: React.FC = () => {
                     setCityName(e.target.options[e.target.selectedIndex].text);
                     setSelectedCityId(Number(e.target.value));
                   }}
+                  className="form-select"
                 >
                   {citiesLoading && <option>読み込み中…</option>}
                   {!citiesLoading && cities.length === 0 && <option>—</option>}
@@ -310,9 +312,14 @@ const NewPostForm: React.FC = () => {
               value={banchiName}
               onChange={(e) => setBanchiName(e.target.value)}
               placeholder="例: 1丁目2-3"
-              className="me-2"
+              className="flex-grow-1 min-w-0"
             />
-            <Button variant="secondary" onClick={handleSearch}>
+
+            <Button
+              variant="secondary"
+              onClick={handleSearch}
+              className="flex-shrink-0"
+            >
               地図を移動
             </Button>
           </div>
