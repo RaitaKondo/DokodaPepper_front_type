@@ -3,7 +3,8 @@ import { Post } from "../types/Types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
-import { Card, Container, Row, Col, Carousel } from "react-bootstrap";
+import { Card, Container, Row, Col, Carousel, Button } from "react-bootstrap";
+import { useAuthContext } from "../AuthContext";
 
 const containerStyle = {
   width: "100%",
@@ -14,6 +15,7 @@ const PostDetail: React.FC = () => {
   const { state } = useLocation();
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post | null>(state?.post || null);
+  const { user } = useAuthContext();
 
   const [center, setCenter] = useState<{ lat: number; lng: number } | null>(
     null
@@ -100,6 +102,8 @@ const PostDetail: React.FC = () => {
           </Col>
         </Row>
       )}
+
+      {user?.username === post.userName && <Button>Edit</Button>}
     </Container>
   );
 };

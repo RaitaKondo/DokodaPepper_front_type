@@ -189,6 +189,7 @@ const NewPostForm: React.FC = () => {
     formData.append("content", data.content);
     console.log(selectedCityId);
     formData.append("cityId", selectedCityId?.toString() ?? "");
+    formData.append("prefectureId", selectedPrefId?.toString() ?? "");
 
     if (images.length !== 0) {
       images.forEach((img) => formData.append("images", img));

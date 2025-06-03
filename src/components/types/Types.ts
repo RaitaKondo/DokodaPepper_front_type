@@ -52,6 +52,7 @@ export interface Post {
   };
   images: PostImage[]; // ← ここを追加
   prefectureName: string; // 追加
+  prefectureId: number;
 }
 
   export interface PageResponse<T> {

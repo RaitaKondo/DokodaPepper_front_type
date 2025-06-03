@@ -10,7 +10,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    console.log(post);
     navigate(`/posts/${post.postId}`, { state: { post } }); // ← postオブジェクト渡す
   };
 
