@@ -15,7 +15,7 @@ interface FormInputs {
   content: string;
 }
 
-const NewPostForm: React.FC = () => {
+const EditPostForm: React.FC = () => {
   const [center, setCenter] = useState<{ lat: number; lng: number } | null>(
     null
   );
@@ -109,7 +109,7 @@ const NewPostForm: React.FC = () => {
     }
   }, [cities, citiesLoading, geoCityName, autoSelectCityEnabled]);
 
-  // Lat,lngから住所を取得するして表示用アドレス欄にセットする関数。初回レンダー時とマップのピン移動の際は都道府県のセレクター選択も変更が入る。
+  // Last,lngから住所を取得するして表示用アドレス欄にセットする関数。初回レンダー時とマップのピン移動の際は都道府県のラジエーター選択も変更が入る。
   const geocodeLatLng = async (lat: number, lng: number) => {
     try {
       const res = await axios.get(
@@ -367,4 +367,4 @@ const NewPostForm: React.FC = () => {
   );
 };
 
-export default NewPostForm;
+export default EditPostForm;

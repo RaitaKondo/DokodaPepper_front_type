@@ -16,7 +16,7 @@ const PrefContext = createContext<PrefContextType>({
   isError: false,
 });
 
-const LOCAL_STORAGE_KEY = "prefectures";
+const SESSION_STORAGE_KEY = "prefectures";
 
 export const PrefProvider = ({ children }: { children: ReactNode }) => {
   const [prefs, setPrefs] = useState<Pref[]>([]);
@@ -24,7 +24,7 @@ export const PrefProvider = ({ children }: { children: ReactNode }) => {
   const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const stored = sessionStorage.getItem(SESSION_STORAGE_KEY);
     if (stored) {
       try {
         const parsed = JSON.parse(stored) as Pref[];
@@ -49,7 +49,7 @@ export const PrefProvider = ({ children }: { children: ReactNode }) => {
         "http://localhost:8080/api/prefectures"
       );
       setPrefs(res.data);
-      sessionStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(res.data));
+      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(res.data));
     } catch (error) {
       setIsError(true);
       console.error("都道府県データの取得に失敗しました:", error);

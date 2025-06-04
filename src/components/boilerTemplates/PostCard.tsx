@@ -29,7 +29,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           />
         )}
         <div className="card-body">
-          <h5 className="card-title">{post.city.name}</h5>
+          <h5 className="card-title">{post.content}</h5>
+          <p className="card-title">{post.address}</p>
           <p className="card-text">{post.userName}</p>
           <p className="card-text">
             <small className="text-muted">

@@ -10,6 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "./NotFound";
 import { useAuthContext } from "./AuthContext";
 import NewPostForm from "./NewPostForm";
+import EditPostForm from "./EditPostForm";
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuthContext();
@@ -41,7 +42,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          {/* ←これが対応するルート */}
+          <Route
+            path="/posts/:id/edit"
+            element={
+              <ProtectedRoute>
+                <EditPostForm />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/post_new"
             element={

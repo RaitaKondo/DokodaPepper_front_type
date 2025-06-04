@@ -15,10 +15,14 @@ const Home: React.FC = () => {
   const { prefs, isLoading: prefsLoading, isError } = usePrefectures();
   const [selectedPrefId, setSelectedPrefId] = useState<number | "">("");
   const [rehydrated, setRehydrated] = useState<boolean>(false); // ★ 追加
+  const [cities, setCities] = useState<{ id: number; name: string }[]>([]);
+  const [citiesLoading, setCitiesLoading] = useState(false);
+  const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
+  const [cityName, setCityName] = useState("");
   const isFirstRun = useRef(true);
 
   const { setIsAuthenticated, user } = useAuthContext();
-  console.log(user?.username);
+  console.log(user);
 
   const json = sessionStorage.getItem("prefectures");
 
@@ -51,17 +55,26 @@ const Home: React.FC = () => {
   // 投稿取得（都道府県でフィルター）
   const handleFilter = async () => {
     try {
-      const response = await axios.get<PageResponse<Post>>(
-        `http://localhost:8080/api/posts/prefecture/${selectedPrefId}?page=${page}`
-      );
+      let url = `http://localhost:8080/api/posts/prefecture/${selectedPrefId}?page=${page}`;
+
+      if (selectedCityId) {
+        url = `http://localhost:8080/api/posts/prefecture/${selectedPrefId}/city/${selectedCityId}?page=${page}`;
+      }
+
+      const response = await axios.get<PageResponse<Post>>(url);
       setPosts(response.data.content);
       setTotalPages(response.data.totalPages);
 
-      // sessionStorage に保存
+      // セッションストレージへの保存
       sessionStorage.setItem("posts", JSON.stringify(response.data.content));
       sessionStorage.setItem("selectedPrefId", selectedPrefId.toString());
       sessionStorage.setItem("page", page.toString());
       sessionStorage.setItem("totalPages", response.data.totalPages.toString());
+      if (selectedCityId !== null) {
+        sessionStorage.setItem("selectedCityId", selectedCityId.toString());
+      } else {
+        sessionStorage.removeItem("selectedCityId");
+      }
     } catch (error) {
       window.location.href = "/login?error=expired";
     } finally {
@@ -75,6 +88,10 @@ const Home: React.FC = () => {
     const savedPage = sessionStorage.getItem("page");
     const savedPosts = sessionStorage.getItem("posts");
     const savedTotalPages = sessionStorage.getItem("totalPages");
+    const savedCityId = sessionStorage.getItem("selectedCityId");
+    if (savedCityId !== null) {
+      setSelectedCityId(Number(savedCityId));
+    }
 
     // 有効な都道府県ID（1〜47）かチェック（1未満と48以上は無効）
     if (savedPrefId > 0 && savedPrefId < 48) {
@@ -92,7 +109,7 @@ const Home: React.FC = () => {
       fetchPost(savedPage ? Number(savedPage) : 0);
     }
 
-    console.log("oi76");
+    console.log(posts);
     setRehydrated(true); // ★ すべて終わったらここで true にする
   }, []);
 
@@ -102,7 +119,6 @@ const Home: React.FC = () => {
 
     // 初回は復元目的なのでここで return
     if (isFirstRun.current) {
-      console.log("oi85");
       isFirstRun.current = false;
       return;
     }
@@ -116,11 +132,26 @@ const Home: React.FC = () => {
 
     sessionStorage.setItem("page", page.toString());
     sessionStorage.setItem("selectedPrefId", selectedPrefId.toString());
-  }, [page, selectedPrefId, rehydrated]);
+  }, [page, selectedPrefId, rehydrated, selectedCityId]);
+
+  useEffect(() => {
+    if (selectedPrefId === "") {
+      setCities([]);
+      return;
+    }
+    setCitiesLoading(true);
+    axios
+      .get<{ id: number; name: string }[]>(
+        `http://localhost:8080/api/prefectures/${selectedPrefId}/cities`
+      )
+      .then((res) => setCities(res.data))
+      .catch(() => setCities([]))
+      .finally(() => setCitiesLoading(false));
+  }, [selectedPrefId]);
 
   // UI
   if (loading) return <div>読み込み中...</div>;
-  if (posts.length === 0) return <div>投稿が見つかりません</div>;
+  // if (posts.length === 0) return <div>投稿が見つかりません</div>;
 
   return (
     <div className="card" style={{ width: "80vw", border: "none" }}>
@@ -131,6 +162,7 @@ const Home: React.FC = () => {
           onChange={(e) => {
             setSelectedPrefId(Number(e.target.value) || "");
             setPage(0);
+            setSelectedCityId(null);
           }}
           className="form-select"
         >
@@ -147,42 +179,67 @@ const Home: React.FC = () => {
                 </option>
               ))}
         </select>
+      </label>{" "}
+      <label>
+        市区町村
+        <select
+          disabled={!selectedPrefId || citiesLoading}
+          onChange={(e) => {
+            setCityName(e.target.options[e.target.selectedIndex].text);
+            setSelectedCityId(Number(e.target.value));
+          }}
+          className="form-select"
+        >
+          {citiesLoading && <option>読み込み中…</option>}
+          {!citiesLoading && cities.length === 0 && <option>—</option>}
+          <option value="">選択してください</option>
+          {!citiesLoading &&
+            cities.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+        </select>
       </label>
-
+      {posts.length === 0 && <div>No Peppers...</div>}
       <div className="card-body">
         <div className="container mt-4">
-          <h1 className="text-center mb-4">最新投稿</h1>
+          {posts.length !== 0 && (
+            <>
+              <h1 className="text-center mb-4">最新投稿</h1>
 
-          <div className="row">
-            {posts.map((post) => (
-              <div
-                className="col-md-4 mb-4 d-flex justify-content-center"
-                key={post.postId}
-              >
-                <PostCard post={post} />
+              <div className="row">
+                {posts.map((post) => (
+                  <div
+                    className="col-md-4 mb-4 d-flex justify-content-center"
+                    key={post.postId}
+                  >
+                    <PostCard post={post} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <div className="d-flex justify-content-center align-items-center mt-4 gap-2">
-            <Button
-              variant="secondary"
-              disabled={page === 0}
-              onClick={() => setPage((prev) => prev - 1)}
-            >
-              前
-            </Button>
-            <span>
-              {page + 1} / {totalPages}
-            </span>
-            <Button
-              variant="secondary"
-              disabled={page + 1 >= totalPages}
-              onClick={() => setPage((prev) => prev + 1)}
-            >
-              次
-            </Button>
-          </div>
+              <div className="d-flex justify-content-center align-items-center mt-4 gap-2">
+                <Button
+                  variant="secondary"
+                  disabled={page === 0}
+                  onClick={() => setPage((prev) => prev - 1)}
+                >
+                  前
+                </Button>
+                <span>
+                  {page + 1} / {totalPages}
+                </span>
+                <Button
+                  variant="secondary"
+                  disabled={page + 1 >= totalPages}
+                  onClick={() => setPage((prev) => prev + 1)}
+                >
+                  次
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

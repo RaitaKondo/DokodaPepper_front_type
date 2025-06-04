@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Post } from "../types/Types";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -29,6 +29,8 @@ const PostDetail: React.FC = () => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (!post && id) {
       axios.get<Post>(`http://localhost:8080/api/posts/${id}`).then((res) => {
@@ -46,6 +48,13 @@ const PostDetail: React.FC = () => {
 
   if (!isLoaded) return <div>マップ読み込み中...</div>;
   if (!post) return <div>投稿読み込み中...</div>;
+
+  const handleClick = () => {
+    navigate(`/posts/${post.postId}/edit`, { state: { post } }); // ← postオブジェクト渡す
+  };
+
+  console.log(user?.username);
+  console.log(post?.userName);
 
   return (
     <Container className="my-4">
@@ -103,7 +112,9 @@ const PostDetail: React.FC = () => {
         </Row>
       )}
 
-      {user?.username === post.userName && <Button>Edit</Button>}
+      {user?.username === post.userName && (
+        <Button onClick={handleClick}>Edit</Button>
+      )}
     </Container>
   );
 };
