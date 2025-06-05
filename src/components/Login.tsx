@@ -7,7 +7,7 @@ const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useAuthContext();
+  const { setIsAuthenticated, fetchUser } = useAuthContext();
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -20,12 +20,8 @@ const LoginPage: React.FC = () => {
         { username, password },
         { withCredentials: true }
       );
-      console.log("ログイン成功、遷移待機中...");
-      setTimeout(() => {
-        setIsAuthenticated(true);
-        console.log("トップページへ遷移");
-        navigate("/");
-      }, 200); // ログイン成功時にトップページへ
+      await fetchUser();
+      navigate("/");
     } catch (err) {
       alert("ログインに失敗しました");
     }

@@ -341,9 +341,16 @@ const NewPostForm: React.FC = () => {
           <Form.Label>コメント</Form.Label>
           <Form.Control
             as="textarea"
-            rows={3}
+            rows={1}
             placeholder="例: この場所で〇〇を発見！"
-            {...register("content", { required: "コメントは必須です。" })}
+            maxLength={50}
+            {...register("content", {
+              required: "コメントは必須です。",
+              maxLength: {
+                value: 50,
+                message: "50文字以内で入力してください。",
+              },
+            })}
           />
           {errors.content && (
             <Form.Text className="text-danger">

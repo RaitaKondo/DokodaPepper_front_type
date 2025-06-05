@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Container, Form, Button, Spinner, Alert } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Carousel,
+  Form,
+  Button,
+  Spinner,
+  Alert,
+} from "react-bootstrap";
 import ImageUploader from "./ImageUploader";
 import { usePrefectures } from "./PrefectureContext";
+import { Post } from "./types/Types";
+import LoginPage from "./Login";
 
 const containerStyle = {
   width: "100%",
@@ -16,6 +28,8 @@ interface FormInputs {
 }
 
 const EditPostForm: React.FC = () => {
+  const { state } = useLocation();
+  const [post, setPost] = useState<Post | null>(state?.post || null);
   const [center, setCenter] = useState<{ lat: number; lng: number } | null>(
     null
   );
@@ -56,27 +70,27 @@ const EditPostForm: React.FC = () => {
   } = useForm<FormInputs>();
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setMessage("このブラウザでは位置情報が利用できません。");
-      setLoading(false);
-      return;
+    if (
+      post &&
+      Object.values(post).every((v) => v !== null && v !== undefined)
+    ) {
+      setSelectedPrefId(post.prefectureId);
+      setPrefName(post.prefectureName);
+      setSelectedCityId(post.city.id);
+      setCityName(post.city.name);
+      setAddress(post.address);
+    } else {
+      console.log("no valid values..");
     }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        setCenter({ lat, lng });
-        setMarkerPosition({ lat, lng });
-        await geocodeLatLng(lat, lng);
-        setLoading(false);
-      },
-      (err) => {
-        console.error(err);
-        setMessage("位置情報の取得に失敗しました。");
-        setLoading(false);
-      }
-    );
+    (async () => {
+      const lat = post!.latitude;
+      const lng = post!.longitude;
+      setCenter({ lat, lng });
+      setMarkerPosition({ lat, lng });
+      await geocodeLatLng(lat, lng);
+      setLoading(false);
+    })();
   }, []);
 
   useEffect(() => {
@@ -198,16 +212,18 @@ const EditPostForm: React.FC = () => {
     try {
       console.log("FormData:", formData);
       console.log("FormData entries:", Array.from(formData.entries()));
-      await axios.post("http://localhost:8080/api/postNew", formData, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        `http://localhost:8080/api/posts/${post?.postId}/edited`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
       setMessage("投稿完了しました！");
       reset();
       setImages([]);
       setResetSignal(true); // プレビューを初期化
+      window.location.href = "/";
     } catch (err) {
       console.error(err);
       setMessage("投稿に失敗しました。");
@@ -237,97 +253,29 @@ const EditPostForm: React.FC = () => {
             center={center!}
             zoom={15}
           >
-            {markerPosition && (
-              <Marker
-                position={markerPosition}
-                draggable
-                onDragEnd={(e) => {
-                  const lat = e.latLng?.lat();
-                  const lng = e.latLng?.lng();
-                  if (lat && lng) {
-                    const pos = { lat, lng };
-                    setMarkerPosition(pos);
-                    setCenter(pos);
-                    geocodeLatLng(lat, lng);
-                    setAutoSelectCityEnabled(true);
-                  }
-                }}
-              />
-            )}
+            {markerPosition && <Marker position={markerPosition} />}
           </GoogleMap>
-
-          <div className="mt-3 d-flex flex-wrap gap-2 align-items-center">
-            <form className="d-flex flex-wrap gap-2 align-items-center">
-              <label>
-                都道府県
-                <select
-                  value={selectedPrefId}
-                  onChange={(e) => {
-                    setAutoSelectCityEnabled(false);
-                    setSelectedPrefId(Number(e.target.value));
-                    const name = e.target.options[e.target.selectedIndex].text;
-                    setPrefName(name);
-                    setGeoCityName("");
-                    setSelectedCityId(null);
-                    setCityName("");
-                  }}
-                  className="form-select"
-                >
-                  <option value="" disabled>
-                    選択してください
-                  </option>
-                  {prefs.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label>
-                市区町村
-                <select
-                  disabled={!selectedPrefId || citiesLoading}
-                  onChange={(e) => {
-                    setCityName(e.target.options[e.target.selectedIndex].text);
-                    setSelectedCityId(Number(e.target.value));
-                  }}
-                  className="form-select"
-                >
-                  {citiesLoading && <option>読み込み中…</option>}
-                  {!citiesLoading && cities.length === 0 && <option>—</option>}
-                  <option value="">選択してください</option>
-                  {!citiesLoading &&
-                    cities.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                </select>
-              </label>
-            </form>
-
-            <Form.Control
-              disabled={!cities}
-              type="text"
-              value={banchiName}
-              onChange={(e) => setBanchiName(e.target.value)}
-              placeholder="例: 1丁目2-3"
-              className="flex-grow-1 min-w-0"
-            />
-
-            <Button
-              variant="secondary"
-              onClick={handleSearch}
-              className="flex-shrink-0"
-            >
-              地図を移動
-            </Button>
-          </div>
         </div>
 
         <div className="col-md-6">
-          <ImageUploader onImagesChange={setImages} resetSignal={resetSignal} />
+          {post?.images && post.images.length > 0 && (
+            <Row className="mb-3">
+              <Col>
+                <Carousel>
+                  {post.images.map((img) => (
+                    <Carousel.Item key={img.id}>
+                      <img
+                        className="d-block w-100"
+                        src={`http://localhost:8080${img.imageUrl}`}
+                        alt={`Image ${img.sortOrder}`}
+                        style={{ maxHeight: "300px", objectFit: "cover" }}
+                      />
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              </Col>
+            </Row>
+          )}
         </div>
       </div>
 
@@ -339,12 +287,22 @@ const EditPostForm: React.FC = () => {
 
         <Form.Group className="mb-3">
           <Form.Label>コメント</Form.Label>
+
+          {/* 新しいコメント入力欄 */}
           <Form.Control
             as="textarea"
-            rows={3}
-            placeholder="例: この場所で〇〇を発見！"
-            {...register("content", { required: "コメントは必須です。" })}
+            rows={1}
+            placeholder={post?.content}
+            maxLength={50}
+            {...register("content", {
+              required: "コメントは必須です。",
+              maxLength: {
+                value: 50,
+                message: "50文字以内で入力してください。",
+              },
+            })}
           />
+
           {errors.content && (
             <Form.Text className="text-danger">
               {errors.content.message}
@@ -359,7 +317,7 @@ const EditPostForm: React.FC = () => {
               投稿中...
             </>
           ) : (
-            "投稿する"
+            "更新する"
           )}
         </Button>
       </Form>

@@ -49,44 +49,44 @@ const PostDetail: React.FC = () => {
   if (!isLoaded) return <div>マップ読み込み中...</div>;
   if (!post) return <div>投稿読み込み中...</div>;
 
-  const handleClick = () => {
-    navigate(`/posts/${post.postId}/edit`, { state: { post } }); // ← postオブジェクト渡す
+  const handleEdit = () => {
+    navigate(`/posts/${post.postId}/edit`, { state: { post } });
   };
 
-  console.log(user?.username);
-  console.log(post?.userName);
+  const handleDelete = async () => {
+    await axios.post(`http://localhost:8080/api/posts/${id}/delete`);
+    window.location.href = "/";
+  };
 
   return (
     <Container className="my-4">
+      <h2 className="mb-4 text-center">投稿詳細</h2>
+
       <Row>
-        <Col md={8}>
-          {isLoaded && (
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={center!}
-              zoom={16}
-            >
-              <Marker position={markerPosition!} />
-            </GoogleMap>
-          )}
+        <Col md={8} className="mb-4">
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={center!}
+            zoom={16}
+          >
+            <Marker position={markerPosition!} />
+          </GoogleMap>
         </Col>
+
         <Col md={4}>
-          <Card>
+          <Card className="shadow-sm">
             <Card.Body>
-              <Card.Title>{post.content}</Card.Title>
+              <Card.Title className="mb-3">{post.content}</Card.Title>
               <Card.Text>
-                <strong>住所：</strong>
-                {post.address}
+                <strong>住所：</strong> {post.address}
                 <br />
-                <strong>投稿者：</strong>
-                {post.userName}
+                <strong>投稿者：</strong> {post.userName}
                 <br />
-                <strong>投稿日時：</strong>
+                <strong>投稿日時：</strong>{" "}
                 {new Date(post.createdAt).toLocaleString()}
                 <br />
-                <strong>更新日時：</strong>
+                <strong>更新日時：</strong>{" "}
                 {new Date(post.updatedAt).toLocaleString()}
-                <br />
               </Card.Text>
             </Card.Body>
           </Card>
@@ -95,7 +95,8 @@ const PostDetail: React.FC = () => {
 
       {post.images && post.images.length > 0 && (
         <Row className="mt-4">
-          <Col>
+          {/* 左半分：写真 */}
+          <Col md={6}>
             <Carousel>
               {post.images.map((img) => (
                 <Carousel.Item key={img.id}>
@@ -103,17 +104,95 @@ const PostDetail: React.FC = () => {
                     className="d-block w-100"
                     src={`http://localhost:8080${img.imageUrl}`}
                     alt={`Image ${img.sortOrder}`}
-                    style={{ maxHeight: "400px", objectFit: "cover" }}
+                    style={{
+                      maxHeight: "400px",
+                      objectFit: "cover",
+                      borderRadius: "10px",
+                    }}
                   />
                 </Carousel.Item>
               ))}
             </Carousel>
           </Col>
+
+          {/* 右半分：ボタン + コメント欄 */}
+          <Col md={6}>
+            <div className="d-flex flex-column gap-2 mb-3">
+              <Button variant="success" className="w-100">
+                見つけた
+              </Button>
+              <Button variant="warning" className="w-100">
+                通報
+              </Button>
+            </div>
+
+            <div
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "10px",
+                maxHeight: "300px",
+                overflowY: "scroll",
+              }}
+            >
+              {/* コメントの例（ここにループでコメント表示可） */}
+              <p>
+                <strong>ユーザー1:</strong> ここにコメントが入ります。
+              </p>
+              <p>
+                <strong>ユーザー2:</strong>{" "}
+                コメントがたくさんあるとスクロールします。
+              </p>
+              <p>
+                <strong>ユーザー3:</strong> さらにスクロール...
+              </p>
+              <p>
+                <strong>ユーザー4:</strong> こんにちは！
+              </p>
+              <p>
+                <strong>ユーザー5:</strong> テストコメントです。
+              </p>
+              <p>
+                <strong>ユーザー6:</strong> 長文も大丈夫です！
+              </p>
+              <p>
+                <strong>ユーザー1:</strong> ここにコメントが入ります。
+              </p>
+              <p>
+                <strong>ユーザー2:</strong>{" "}
+                コメントがたくさんあるとスクロールします。
+              </p>
+              <p>
+                <strong>ユーザー3:</strong> さらにスクロール...
+              </p>
+              <p>
+                <strong>ユーザー4:</strong> こんにちは！
+              </p>
+              <p>
+                <strong>ユーザー5:</strong> テストコメントです。
+              </p>
+              <p>
+                <strong>ユーザー6:</strong> 長文も大丈夫です！
+              </p>{" "}
+              {/* コメントエリアここまで */}
+            </div>
+          </Col>
         </Row>
       )}
 
       {user?.username === post.userName && (
-        <Button onClick={handleClick}>Edit</Button>
+        <Row className="mt-4 justify-content-center gap-2">
+          <Col xs="auto">
+            <Button variant="primary" onClick={handleEdit}>
+              編集
+            </Button>
+          </Col>
+          <Col xs="auto">
+            <Button variant="danger" onClick={handleDelete}>
+              削除
+            </Button>
+          </Col>
+        </Row>
       )}
     </Container>
   );

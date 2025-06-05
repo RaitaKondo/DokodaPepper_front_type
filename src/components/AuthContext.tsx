@@ -12,6 +12,7 @@ type AuthContextType = {
   setIsAuthenticated: (auth: boolean) => void;
   user: UserInfo | null;
   setUser: (user: UserInfo | null) => void;
+  fetchUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,19 +23,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [user, setUser] = useState<UserInfo | null>(null);
 
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/user", {
+        withCredentials: true,
+      });
+      setUser(res.data);
+      setIsAuthenticated(true);
+    } catch {
+      setUser(null);
+      setIsAuthenticated(false);
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/user", { withCredentials: true })
-      .then((res) => {
-        setIsAuthenticated(true);
-        setUser(res.data);
-      })
-      .catch(() => setIsAuthenticated(false));
+    fetchUser();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, setIsAuthenticated, user, setUser }}
+      value={{ isAuthenticated, setIsAuthenticated, user, setUser, fetchUser }}
     >
       {children}
     </AuthContext.Provider>
