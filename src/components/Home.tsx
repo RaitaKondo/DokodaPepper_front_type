@@ -22,7 +22,6 @@ const Home: React.FC = () => {
   const isFirstRun = useRef(true);
 
   const { setIsAuthenticated, user } = useAuthContext();
-  console.log(user);
 
   const json = sessionStorage.getItem("prefectures");
 
@@ -109,10 +108,12 @@ const Home: React.FC = () => {
       fetchPost(savedPage ? Number(savedPage) : 0);
     }
 
-    console.log(posts);
     setRehydrated(true); // ★ すべて終わったらここで true にする
   }, []);
 
+  useEffect(() => {
+    console.log(posts);
+  }, [posts]);
   // page or selectedPrefId の変更時に再取得
   useEffect(() => {
     if (!rehydrated) return; // ★ 完了するまで待つ

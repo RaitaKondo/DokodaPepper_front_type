@@ -1,6 +1,7 @@
-import React from "react";
+import { useState } from "react";
 import { Post } from "../types/Types";
 import { useNavigate } from "react-router-dom";
+import * as FaIcons from "react-icons/ai"; // ← これが重要！
 
 interface PostCardProps {
   post: Post;
@@ -12,6 +13,10 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const handleClick = () => {
     navigate(`/posts/${post.postId}`, { state: { post } }); // ← postオブジェクト渡す
   };
+
+  // const foundIt = post.foundIt;
+  const foundIt = post.foundIt;
+  const report = post.reported;
 
   return (
     <div
@@ -32,6 +37,20 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           <h5 className="card-title">{post.content}</h5>
           <p className="card-title">{post.address}</p>
           <p className="card-text">{post.userName}</p>
+          <p className="card-text">
+            {foundIt ? (
+              <FaIcons.AiFillSmile className="text-warning" />
+            ) : (
+              <FaIcons.AiOutlineSmile />
+            )}
+            {post.numberOfFoundIt}/
+            {report ? (
+              <FaIcons.AiFillMeh className="text-success" />
+            ) : (
+              <FaIcons.AiOutlineMeh />
+            )}
+            {post.numberOfReported}
+          </p>
           <p className="card-text">
             <small className="text-muted">
               投稿日: {new Date(post.createdAt).toLocaleString()}

@@ -5,6 +5,7 @@ import axios from "axios";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { Card, Container, Row, Col, Carousel, Button } from "react-bootstrap";
 import { useAuthContext } from "../AuthContext";
+import * as FaIcons from "react-icons/ai"; // ← これが重要！
 
 const containerStyle = {
   width: "100%",
@@ -14,7 +15,7 @@ const containerStyle = {
 const PostDetail: React.FC = () => {
   const { state } = useLocation();
   const { id } = useParams<{ id: string }>();
-  const [post, setPost] = useState<Post | null>(state?.post || null);
+  const [post, setPost] = useState<Post | null>(state?.post ?? null);
   const { user } = useAuthContext();
 
   const [center, setCenter] = useState<{ lat: number; lng: number } | null>(
@@ -29,15 +30,51 @@ const PostDetail: React.FC = () => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
   });
 
-  const navigate = useNavigate();
+  const [foundCount, setFoundCount] = useState<number>(
+    post?.numberOfFoundIt ?? 0
+  );
 
-  useEffect(() => {
-    if (!post && id) {
-      axios.get<Post>(`http://localhost:8080/api/posts/${id}`).then((res) => {
-        setPost(res.data);
-      });
-    }
-  }, [id, post]);
+  const [foundIt, setFoundIt] = useState<boolean>(post!.foundIt);
+
+  const [reportedCount, setReportedCount] = useState<number>(
+    post?.numberOfReported ?? 0
+  );
+
+  const [reported, setReported] = useState<boolean>(post!.reported);
+
+  const navigate = useNavigate();
+  // const [hasNavigated, setHasNavigated] = useState(false);
+
+  // useEffect(() => {
+  //   if (!post && id) {
+  //     axios.get<Post>(`http://localhost:8080/api/posts/${id}`).then((res) => {
+  //       navigate(`/posts/${id}`, { state: { post: res.data } });
+  //       setHasNavigated(true);
+  //     });
+  //   }
+  // }, [id, post, hasNavigated]);
+
+  const handleFound = () => {
+    axios
+      .post(`http://localhost:8080/api/posts/${id}/found`)
+      .then((res) => {
+        const toggle = !foundIt;
+        setFoundIt(toggle);
+        setFoundCount((prev) => (toggle ? prev + 1 : prev - 1));
+      })
+      .catch((error) => (window.location.href = "/login?error=expired"));
+  };
+
+  const handleReport = () => {
+    axios
+      .post(`http://localhost:8080/api/posts/${id}/report`)
+      .then(() => {
+        const toggle = !reported;
+        setReported(toggle);
+        setReportedCount((prev) => (toggle ? prev + 1 : prev - 1));
+      })
+      .catch((error) => (window.location.href = "/login?error=expired"));
+  };
 
   useEffect(() => {
     if (post) {
@@ -118,11 +155,21 @@ const PostDetail: React.FC = () => {
           {/* 右半分：ボタン + コメント欄 */}
           <Col md={6}>
             <div className="d-flex flex-column gap-2 mb-3">
-              <Button variant="success" className="w-100">
-                見つけた
+              <Button
+                variant={foundIt ? "warning" : "secondary"}
+                className="w-100 d-flex align-items-center justify-content-center gap-2"
+                onClick={handleFound}
+              >
+                <FaIcons.AiOutlineSmile />
+                あった！{foundCount}
               </Button>
-              <Button variant="warning" className="w-100">
-                通報
+              <Button
+                variant={reported ? "success" : "secondary"}
+                className="w-100 d-flex align-items-center justify-content-center gap-2"
+                onClick={handleReport}
+              >
+                <FaIcons.AiOutlineMeh />
+                見当たりません{reportedCount}
               </Button>
             </div>
 
@@ -184,11 +231,13 @@ const PostDetail: React.FC = () => {
         <Row className="mt-4 justify-content-center gap-2">
           <Col xs="auto">
             <Button variant="primary" onClick={handleEdit}>
+              <FaIcons.AiOutlineEdit />
               編集
             </Button>
           </Col>
           <Col xs="auto">
             <Button variant="danger" onClick={handleDelete}>
+              <FaIcons.AiOutlineDelete />
               削除
             </Button>
           </Col>

@@ -39,7 +39,12 @@ export interface Post {
   images: PostImage[]; // ← ここを追加
   prefectureName: string; // 追加
   prefectureId: number;
+  numberOfFoundIt: number;
+  numberOfReported: number;
+  foundIt: boolean;
+  reported: boolean;
 }
+
 
   export interface PageResponse<T> {
     content: T[];
