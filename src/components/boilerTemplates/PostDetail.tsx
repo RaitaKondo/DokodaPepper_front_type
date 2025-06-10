@@ -1,5 +1,5 @@
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { Post } from "../types/Types";
+import { Post, Comment } from "../types/Types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
@@ -43,16 +43,10 @@ const PostDetail: React.FC = () => {
   const [reported, setReported] = useState<boolean>(post!.reported);
 
   const navigate = useNavigate();
-  // const [hasNavigated, setHasNavigated] = useState(false);
 
-  // useEffect(() => {
-  //   if (!post && id) {
-  //     axios.get<Post>(`http://localhost:8080/api/posts/${id}`).then((res) => {
-  //       navigate(`/posts/${id}`, { state: { post: res.data } });
-  //       setHasNavigated(true);
-  //     });
-  //   }
-  // }, [id, post, hasNavigated]);
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  const [content, setContent] = useState<string>("");
 
   const handleFound = () => {
     axios
@@ -83,6 +77,22 @@ const PostDetail: React.FC = () => {
     }
   }, [post]);
 
+  useEffect(() => {
+    fetchComment();
+  }, []);
+
+  const fetchComment = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/api/posts/${id}/comments`
+      );
+      setComments(res.data);
+      console.log(res.data);
+    } catch (err) {
+      console.log("コメント取得失敗：", err);
+    }
+  };
+
   if (!isLoaded) return <div>マップ読み込み中...</div>;
   if (!post) return <div>投稿読み込み中...</div>;
 
@@ -93,6 +103,19 @@ const PostDetail: React.FC = () => {
   const handleDelete = async () => {
     await axios.post(`http://localhost:8080/api/posts/${id}/delete`);
     window.location.href = "/";
+  };
+
+  const handleCommentPost = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await axios.post(`http://localhost:8080/api/posts/${id}/comments`, {
+        content,
+      });
+      setContent(""); // フォームをリセット
+      fetchComment(); // 再取得
+    } catch (err) {
+      console.error("投稿失敗:", err);
+    }
   };
 
   return (
@@ -171,6 +194,23 @@ const PostDetail: React.FC = () => {
                 <FaIcons.AiOutlineMeh />
                 見当たりません{reportedCount}
               </Button>
+
+              <form onSubmit={handleCommentPost}>
+                <div className="d-flex align-items-start gap-2 mt-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="コメントを入力"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    required
+                    style={{ flex: 1 }} // 横幅いっぱい使う
+                  />
+                  <Button variant="primary" type="submit">
+                    投稿
+                  </Button>
+                </div>
+              </form>
             </div>
 
             <div
@@ -183,44 +223,17 @@ const PostDetail: React.FC = () => {
               }}
             >
               {/* コメントの例（ここにループでコメント表示可） */}
-              <p>
-                <strong>ユーザー1:</strong> ここにコメントが入ります。
-              </p>
-              <p>
-                <strong>ユーザー2:</strong>{" "}
-                コメントがたくさんあるとスクロールします。
-              </p>
-              <p>
-                <strong>ユーザー3:</strong> さらにスクロール...
-              </p>
-              <p>
-                <strong>ユーザー4:</strong> こんにちは！
-              </p>
-              <p>
-                <strong>ユーザー5:</strong> テストコメントです。
-              </p>
-              <p>
-                <strong>ユーザー6:</strong> 長文も大丈夫です！
-              </p>
-              <p>
-                <strong>ユーザー1:</strong> ここにコメントが入ります。
-              </p>
-              <p>
-                <strong>ユーザー2:</strong>{" "}
-                コメントがたくさんあるとスクロールします。
-              </p>
-              <p>
-                <strong>ユーザー3:</strong> さらにスクロール...
-              </p>
-              <p>
-                <strong>ユーザー4:</strong> こんにちは！
-              </p>
-              <p>
-                <strong>ユーザー5:</strong> テストコメントです。
-              </p>
-              <p>
-                <strong>ユーザー6:</strong> 長文も大丈夫です！
-              </p>{" "}
+              {comments.length !== 0 ? (
+                comments?.map((comment) => (
+                  <div>
+                    <span>{comment.username}</span>
+                    <span>{" : "}</span>
+                    <span>{comment.content}</span>
+                  </div>
+                ))
+              ) : (
+                <p>コメントはまだありません。</p>
+              )}{" "}
               {/* コメントエリアここまで */}
             </div>
           </Col>

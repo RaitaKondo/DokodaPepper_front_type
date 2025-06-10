@@ -43,7 +43,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             ) : (
               <FaIcons.AiOutlineSmile />
             )}
-            {post.numberOfFoundIt}/
+            {post.numberOfFoundIt} /{" "}
             {report ? (
               <FaIcons.AiFillMeh className="text-success" />
             ) : (

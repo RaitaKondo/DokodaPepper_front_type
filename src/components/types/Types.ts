@@ -45,6 +45,13 @@ export interface Post {
   reported: boolean;
 }
 
+export interface Comment {
+  commentId: number;
+  username: string;
+  content: string;
+  createdAt: string;
+};
+
 
   export interface PageResponse<T> {
     content: T[];
