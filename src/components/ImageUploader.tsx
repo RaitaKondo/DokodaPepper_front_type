@@ -11,12 +11,34 @@ interface Props {
   resetSignal: boolean;
 }
 
+const MAX_IMAGES = 5;
+const MAX_SIZE_MB = 2;
+
 const ImageUploader: React.FC<Props> = ({ onImagesChange, resetSignal }) => {
   const [previews, setPreviews] = useState<PreviewImage[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
     const files = Array.from(e.target.files || []);
-    const validFiles = files.filter((file) => file.size < 2 * 1024 * 1024); // 2MB制限
+    const validFiles: File[] = [];
+
+    for (const file of files) {
+      if (validFiles.length >= MAX_IMAGES) {
+        alert(`最大${MAX_IMAGES}枚までです。画像は5枚まで選択済みです。`);
+        break;
+      }
+      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+        alert(`${file.name} は ${MAX_SIZE_MB}MB を超えています`);
+        continue;
+      }
+      const fileKeySet = new Set(
+        previews.map((p) => p.file.name + p.file.size)
+      );
+      const isDuplicate = fileKeySet.has(file.name + file.size);
+      if (isDuplicate) continue;
+      validFiles.push(file);
+    }
+
     onImagesChange(validFiles);
 
     const previewPromises = validFiles.map((file) => {
