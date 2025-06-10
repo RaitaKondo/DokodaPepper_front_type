@@ -30,7 +30,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             src={`http://localhost:8080${post.images[0].imageUrl}`}
             className="card-img-top img-fluid"
             alt="投稿画像"
-            style={{ maxWidth: "100%", height: "auto", objectFit: "cover" }}
+            style={{ maxWidth: "100%", height: "200px", objectFit: "cover" }}
           />
         )}
         <div className="card-body">

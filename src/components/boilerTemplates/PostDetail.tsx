@@ -165,8 +165,9 @@ const PostDetail: React.FC = () => {
                     src={`http://localhost:8080${img.imageUrl}`}
                     alt={`Image ${img.sortOrder}`}
                     style={{
-                      maxHeight: "400px",
-                      objectFit: "cover",
+                      maxWidth: "100%",
+                      height: "400px",
+                      objectFit: "contain",
                       borderRadius: "10px",
                     }}
                   />
