@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "./AuthContext";
+import api from "../api/api";
 
 const Logout: React.FC = () => {
   const navigate = useNavigate();
@@ -11,11 +12,7 @@ const Logout: React.FC = () => {
   useEffect(() => {
     const doLogout = async () => {
       try {
-        await axios.post(
-          "http://localhost:8080/api/logout",
-          {},
-          { withCredentials: true }
-        );
+        await axios.post("/api/logout", {}, { withCredentials: true });
       } catch (err) {
         console.error("ログアウト失敗", err);
       } finally {

@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import axios from "axios";
+import api from "../api/api";
 import { PrefContextType } from "./types/Types";
 import { Pref } from "./types/Types";
 
@@ -45,9 +46,7 @@ export const PrefProvider = ({ children }: { children: ReactNode }) => {
   const fetchPrefectures = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get<Pref[]>(
-        "http://localhost:8080/api/prefectures"
-      );
+      const res = await axios.get<Pref[]>("/api/prefectures");
       setPrefs(res.data);
       sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(res.data));
     } catch (error) {

@@ -2,6 +2,7 @@ import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Post, Comment } from "../types/Types";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../../api/api";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { Card, Container, Row, Col, Carousel, Button } from "react-bootstrap";
 import { useAuthContext } from "../AuthContext";
@@ -50,7 +51,7 @@ const PostDetail: React.FC = () => {
 
   const handleFound = () => {
     axios
-      .post(`http://localhost:8080/api/posts/${id}/found`)
+      .post(`/api/posts/${id}/found`)
       .then((res) => {
         const toggle = !foundIt;
         setFoundIt(toggle);
@@ -61,7 +62,7 @@ const PostDetail: React.FC = () => {
 
   const handleReport = () => {
     axios
-      .post(`http://localhost:8080/api/posts/${id}/report`)
+      .post(`/api/posts/${id}/report`)
       .then(() => {
         const toggle = !reported;
         setReported(toggle);
@@ -83,9 +84,7 @@ const PostDetail: React.FC = () => {
 
   const fetchComment = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/posts/${id}/comments`
-      );
+      const res = await axios.get(`/api/posts/${id}/comments`);
       setComments(res.data);
       console.log(res.data);
     } catch (err) {
@@ -101,14 +100,14 @@ const PostDetail: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    await axios.post(`http://localhost:8080/api/posts/${id}/delete`);
+    await axios.post(`/api/posts/${id}/delete`);
     window.location.href = "/";
   };
 
   const handleCommentPost = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:8080/api/posts/${id}/comments`, {
+      await axios.post(`/api/posts/${id}/comments`, {
         content,
       });
       setContent(""); // フォームをリセット
@@ -162,7 +161,7 @@ const PostDetail: React.FC = () => {
                 <Carousel.Item key={img.id}>
                   <img
                     className="d-block w-100"
-                    src={`http://localhost:8080${img.imageUrl}`}
+                    src={`${img.imageUrl}`}
                     alt={`Image ${img.sortOrder}`}
                     style={{
                       maxWidth: "100%",

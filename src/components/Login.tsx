@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../api/api";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthContext } from "./AuthContext";
 
@@ -16,7 +17,7 @@ const LoginPage: React.FC = () => {
   const handleLogin = async () => {
     try {
       await axios.post(
-        "http://localhost:8080/api/login",
+        "/api/login",
         { username, password },
         { withCredentials: true }
       );

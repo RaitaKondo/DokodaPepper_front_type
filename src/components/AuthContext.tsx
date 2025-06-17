@@ -1,6 +1,7 @@
 // components/logics/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import api from "../api/api";
 
 type UserInfo = {
   id: number;
@@ -25,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/user", {
+      const res = await axios.get("/api/user", {
         withCredentials: true,
       });
       setUser(res.data);

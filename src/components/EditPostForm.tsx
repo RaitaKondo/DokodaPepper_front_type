@@ -3,6 +3,7 @@ import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import api from "../api/api";
 import {
   Container,
   Row,
@@ -101,7 +102,7 @@ const EditPostForm: React.FC = () => {
     setCitiesLoading(true);
     axios
       .get<{ id: number; name: string }[]>(
-        `http://localhost:8080/api/prefectures/${selectedPrefId}/cities`
+        `/api/prefectures/${selectedPrefId}/cities`
       )
       .then((res) => setCities(res.data))
       .catch(() => setCities([]))
@@ -126,9 +127,7 @@ const EditPostForm: React.FC = () => {
   // Last,lngから住所を取得するして表示用アドレス欄にセットする関数。初回レンダー時とマップのピン移動の際は都道府県のラジエーター選択も変更が入る。
   const geocodeLatLng = async (lat: number, lng: number) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/geocode?lat=${lat}&lng=${lng}`
-      );
+      const res = await axios.get(`/api/geocode?lat=${lat}&lng=${lng}`);
       const formatted = res.data.results[0]?.formatted_address;
       console.log(res);
       if (formatted) {
@@ -169,12 +168,9 @@ const EditPostForm: React.FC = () => {
     try {
       const fullAddress = `${prefName}${cityName}${banchiName}`;
       console.log(fullAddress);
-      const res = await axios.post(
-        "http://localhost:8080/api/geocode/address",
-        {
-          address: fullAddress,
-        }
-      );
+      const res = await axios.post("/api/geocode/address", {
+        address: fullAddress,
+      });
       console.log(res);
       const loc = res.data.results[0].geometry.location;
 
@@ -212,13 +208,9 @@ const EditPostForm: React.FC = () => {
     try {
       console.log("FormData:", formData);
       console.log("FormData entries:", Array.from(formData.entries()));
-      await axios.post(
-        `http://localhost:8080/api/posts/${post?.postId}/edited`,
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
+      await axios.post(`/api/posts/${post?.postId}/edited`, formData, {
+        withCredentials: true,
+      });
       setMessage("投稿完了しました！");
       reset();
       setImages([]);
@@ -266,7 +258,7 @@ const EditPostForm: React.FC = () => {
                     <Carousel.Item key={img.id}>
                       <img
                         className="d-block w-100"
-                        src={`http://localhost:8080${img.imageUrl}`}
+                        src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`}
                         alt={`Image ${img.sortOrder}`}
                         style={{ maxHeight: "300px", objectFit: "cover" }}
                       />

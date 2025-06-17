@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import api from "../api/api";
 import PostCard from "./boilerTemplates/PostCard";
 import { Post, Pref } from "./types/Types";
 import { PageResponse } from "./types/Types";
@@ -39,7 +40,7 @@ const Home: React.FC = () => {
   const fetchPost = async (page: number) => {
     try {
       const response = await axios.get<PageResponse<Post>>(
-        `http://localhost:8080/api/posts?page=${page}`
+        `/api/posts?page=${page}`
       );
       setPosts(response.data.content);
       setTotalPages(response.data.totalPages);
@@ -54,10 +55,10 @@ const Home: React.FC = () => {
   // 投稿取得（都道府県でフィルター）
   const handleFilter = async () => {
     try {
-      let url = `http://localhost:8080/api/posts/prefecture/${selectedPrefId}?page=${page}`;
+      let url = `/api/posts/prefecture/${selectedPrefId}?page=${page}`;
 
       if (selectedCityId) {
-        url = `http://localhost:8080/api/posts/prefecture/${selectedPrefId}/city/${selectedCityId}?page=${page}`;
+        url = `/api/posts/prefecture/${selectedPrefId}/city/${selectedCityId}?page=${page}`;
       }
 
       const response = await axios.get<PageResponse<Post>>(url);
@@ -143,7 +144,7 @@ const Home: React.FC = () => {
     setCitiesLoading(true);
     axios
       .get<{ id: number; name: string }[]>(
-        `http://localhost:8080/api/prefectures/${selectedPrefId}/cities`
+        `/api/prefectures/${selectedPrefId}/cities`
       )
       .then((res) => setCities(res.data))
       .catch(() => setCities([]))

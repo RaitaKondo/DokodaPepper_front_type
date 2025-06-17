@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
+import api from "../api/api";
 import { Container, Form, Button, Spinner, Alert } from "react-bootstrap";
 import ImageUploader from "./ImageUploader";
 import { usePrefectures } from "./PrefectureContext";
@@ -87,7 +88,7 @@ const NewPostForm: React.FC = () => {
     setCitiesLoading(true);
     axios
       .get<{ id: number; name: string }[]>(
-        `http://localhost:8080/api/prefectures/${selectedPrefId}/cities`
+        `/api/prefectures/${selectedPrefId}/cities`
       )
       .then((res) => setCities(res.data))
       .catch(() => setCities([]))
@@ -112,9 +113,7 @@ const NewPostForm: React.FC = () => {
   // Lat,lngから住所を取得するして表示用アドレス欄にセットする関数。初回レンダー時とマップのピン移動の際は都道府県のセレクター選択も変更が入る。
   const geocodeLatLng = async (lat: number, lng: number) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/geocode?lat=${lat}&lng=${lng}`
-      );
+      const res = await axios.get(`/api/geocode?lat=${lat}&lng=${lng}`);
       const formatted = res.data.results[0]?.formatted_address;
       console.log(res);
       if (formatted) {
@@ -155,12 +154,9 @@ const NewPostForm: React.FC = () => {
     try {
       const fullAddress = `${prefName}${cityName}${banchiName}`;
       console.log(fullAddress);
-      const res = await axios.post(
-        "http://localhost:8080/api/geocode/address",
-        {
-          address: fullAddress,
-        }
-      );
+      const res = await axios.post("/api/geocode/address", {
+        address: fullAddress,
+      });
       console.log(res);
       const loc = res.data.results[0].geometry.location;
 
@@ -198,7 +194,7 @@ const NewPostForm: React.FC = () => {
     try {
       console.log("FormData:", formData);
       console.log("FormData entries:", Array.from(formData.entries()));
-      await axios.post("http://localhost:8080/api/postNew", formData, {
+      await axios.post("/api/postNew", formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
