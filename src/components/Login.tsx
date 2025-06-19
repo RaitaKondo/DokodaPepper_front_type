@@ -28,6 +28,8 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  console.log("API URL:", process.env.REACT_APP_API_URL);
+
   return (
     <div>
       {error === "access_denied" && (
