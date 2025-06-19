@@ -26,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("/api/user", {
+      const res = await api.get("/api/user", {
         withCredentials: true,
       });
       setUser(res.data);
