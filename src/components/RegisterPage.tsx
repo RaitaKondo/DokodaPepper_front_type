@@ -12,7 +12,7 @@ const RegisterPage: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      await axios.post(
+      await api.post(
         "/api/register",
         { username, password },
         { withCredentials: true }

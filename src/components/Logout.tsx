@@ -12,7 +12,7 @@ const Logout: React.FC = () => {
   useEffect(() => {
     const doLogout = async () => {
       try {
-        await axios.post("/api/logout", {}, { withCredentials: true });
+        await api.post("/api/logout", {}, { withCredentials: true });
       } catch (err) {
         console.error("ログアウト失敗", err);
       } finally {

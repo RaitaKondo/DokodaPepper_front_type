@@ -16,7 +16,7 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      await axios.post(
+      await api.post(
         "/api/login",
         { username, password },
         { withCredentials: true }

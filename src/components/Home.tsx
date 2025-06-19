@@ -39,7 +39,7 @@ const Home: React.FC = () => {
   // 投稿取得（全件）
   const fetchPost = async (page: number) => {
     try {
-      const response = await axios.get<PageResponse<Post>>(
+      const response = await api.get<PageResponse<Post>>(
         `/api/posts?page=${page}`
       );
       setPosts(response.data.content);
@@ -61,7 +61,7 @@ const Home: React.FC = () => {
         url = `/api/posts/prefecture/${selectedPrefId}/city/${selectedCityId}?page=${page}`;
       }
 
-      const response = await axios.get<PageResponse<Post>>(url);
+      const response = await api.get<PageResponse<Post>>(url);
       setPosts(response.data.content);
       setTotalPages(response.data.totalPages);
 
@@ -142,7 +142,7 @@ const Home: React.FC = () => {
       return;
     }
     setCitiesLoading(true);
-    axios
+    api
       .get<{ id: number; name: string }[]>(
         `/api/prefectures/${selectedPrefId}/cities`
       )
