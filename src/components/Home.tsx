@@ -36,6 +36,8 @@ const Home: React.FC = () => {
     }
   }
 
+  console.log("API URL:", process.env.REACT_APP_API_URL);
+
   // 投稿取得（全件）
   const fetchPost = async (page: number) => {
     try {
