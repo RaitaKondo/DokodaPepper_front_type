@@ -12,7 +12,11 @@ const Logout: React.FC = () => {
   useEffect(() => {
     const doLogout = async () => {
       try {
-        await axios.post("/api/logout", {}, { withCredentials: true });
+        await axios.post(
+          "https://dokodapepper-api.onrender.com/api/logout",
+          {},
+          { withCredentials: true }
+        );
       } catch (err) {
         console.error("ログアウト失敗", err);
       } finally {

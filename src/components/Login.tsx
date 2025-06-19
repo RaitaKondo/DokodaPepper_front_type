@@ -17,7 +17,7 @@ const LoginPage: React.FC = () => {
   const handleLogin = async () => {
     try {
       await axios.post(
-        "/api/login",
+        "https://dokodapepper-api.onrender.com/api/login",
         { username, password },
         { withCredentials: true }
       );

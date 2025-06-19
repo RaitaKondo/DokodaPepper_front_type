@@ -13,7 +13,7 @@ const RegisterPage: React.FC = () => {
   const handleRegister = async () => {
     try {
       await axios.post(
-        "/api/register",
+        "https://dokodapepper-api.onrender.com/api/register",
         { username, password },
         { withCredentials: true }
       );
