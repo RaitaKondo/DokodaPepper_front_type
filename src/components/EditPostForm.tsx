@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import api from "../api/api";
 import {
   Container,
@@ -100,7 +99,7 @@ const EditPostForm: React.FC = () => {
       return;
     }
     setCitiesLoading(true);
-    axios
+    api
       .get<{ id: number; name: string }[]>(
         `/api/prefectures/${selectedPrefId}/cities`
       )
@@ -127,7 +126,7 @@ const EditPostForm: React.FC = () => {
   // Last,lngから住所を取得するして表示用アドレス欄にセットする関数。初回レンダー時とマップのピン移動の際は都道府県のラジエーター選択も変更が入る。
   const geocodeLatLng = async (lat: number, lng: number) => {
     try {
-      const res = await axios.get(`/api/geocode?lat=${lat}&lng=${lng}`);
+      const res = await api.get(`/api/geocode?lat=${lat}&lng=${lng}`);
       const formatted = res.data.results[0]?.formatted_address;
       console.log(res);
       if (formatted) {
@@ -168,7 +167,7 @@ const EditPostForm: React.FC = () => {
     try {
       const fullAddress = `${prefName}${cityName}${banchiName}`;
       console.log(fullAddress);
-      const res = await axios.post("/api/geocode/address", {
+      const res = await api.post("/api/geocode/address", {
         address: fullAddress,
       });
       console.log(res);
@@ -208,7 +207,7 @@ const EditPostForm: React.FC = () => {
     try {
       console.log("FormData:", formData);
       console.log("FormData entries:", Array.from(formData.entries()));
-      await axios.post(`/api/posts/${post?.postId}/edited`, formData, {
+      await api.post(`/api/posts/${post?.postId}/edited`, formData, {
         withCredentials: true,
       });
       setMessage("投稿完了しました！");

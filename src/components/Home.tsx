@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
 import api from "../api/api";
 import PostCard from "./boilerTemplates/PostCard";
 import { Post, Pref } from "./types/Types";

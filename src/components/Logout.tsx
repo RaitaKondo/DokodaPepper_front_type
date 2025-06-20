@@ -1,6 +1,5 @@
 // Logout.tsx
 import { useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "./AuthContext";
 import api from "../api/api";

@@ -1,6 +1,5 @@
 // components/logics/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
 import api from "../api/api";
 
 type UserInfo = {

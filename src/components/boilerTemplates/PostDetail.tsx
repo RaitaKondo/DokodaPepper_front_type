@@ -1,7 +1,6 @@
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Post, Comment } from "../types/Types";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../../api/api";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { Card, Container, Row, Col, Carousel, Button } from "react-bootstrap";
@@ -50,7 +49,7 @@ const PostDetail: React.FC = () => {
   const [content, setContent] = useState<string>("");
 
   const handleFound = () => {
-    axios
+    api
       .post(`/api/posts/${id}/found`)
       .then((res) => {
         const toggle = !foundIt;
@@ -61,7 +60,7 @@ const PostDetail: React.FC = () => {
   };
 
   const handleReport = () => {
-    axios
+    api
       .post(`/api/posts/${id}/report`)
       .then(() => {
         const toggle = !reported;
@@ -84,7 +83,7 @@ const PostDetail: React.FC = () => {
 
   const fetchComment = async () => {
     try {
-      const res = await axios.get(`/api/posts/${id}/comments`);
+      const res = await api.get(`/api/posts/${id}/comments`);
       setComments(res.data);
       console.log(res.data);
     } catch (err) {
@@ -100,14 +99,14 @@ const PostDetail: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    await axios.post(`/api/posts/${id}/delete`);
+    await api.post(`/api/posts/${id}/delete`);
     window.location.href = "/";
   };
 
   const handleCommentPost = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post(`/api/posts/${id}/comments`, {
+      await api.post(`/api/posts/${id}/comments`, {
         content,
       });
       setContent(""); // フォームをリセット
