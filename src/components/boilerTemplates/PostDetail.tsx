@@ -160,7 +160,7 @@ const PostDetail: React.FC = () => {
                 <Carousel.Item key={img.id}>
                   <img
                     className="d-block w-100"
-                    src={`${img.imageUrl}`}
+                    src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`}
                     alt={`Image ${img.sortOrder}`}
                     style={{
                       maxWidth: "100%",
