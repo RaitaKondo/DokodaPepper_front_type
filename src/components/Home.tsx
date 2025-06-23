@@ -202,14 +202,9 @@ const Home: React.FC = () => {
             ))}
         </select>
       </label>
-      {posts.length === 0 && (
-        <div>
-          <img src="/devImages/NoPeppers.png" alt="No Peppers..." />
-        </div>
-      )}
       <div className="card-body">
         <div className="container mt-4">
-          {posts.length !== 0 && (
+          {posts.length !== 0 ? (
             <>
               <h1 className="text-center mb-4">最新投稿</h1>
 
@@ -244,6 +239,19 @@ const Home: React.FC = () => {
                 </Button>
               </div>
             </>
+          ) : (
+            <div>
+              <img
+                src="/devImages/NoPeppers.png"
+                className="img-fluid"
+                style={{
+                  maxWidth: "100%",
+                  height: "500px",
+                  objectFit: "cover",
+                }}
+                alt="No Peppers..."
+              />
+            </div>
           )}
         </div>
       </div>

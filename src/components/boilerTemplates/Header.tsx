@@ -14,12 +14,20 @@ const Header: React.FC = () => {
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/" end>
-              Home
-            </Nav.Link>
-            <Nav.Link as={NavLink} to="/post_new" end>
-              Post New
-            </Nav.Link>
+            {isAuthenticated ? (
+              <Nav.Link as={NavLink} to="/" end>
+                Home
+              </Nav.Link>
+            ) : (
+              <Nav.Link as={NavLink} to="/login" end>
+                Login
+              </Nav.Link>
+            )}
+            {isAuthenticated ?? (
+              <Nav.Link as={NavLink} to="/post_new" end>
+                Post New
+              </Nav.Link>
+            )}
 
             {isAuthenticated ? (
               <Nav.Link as={NavLink} to="/logout">

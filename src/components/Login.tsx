@@ -43,12 +43,12 @@ const LoginPage: React.FC = () => {
       <input
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        placeholder="ユーザー名 半角英数字のみ"
+        placeholder="ユーザー名"
       />
       <input
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="パスワード  半角英数字のみ"
+        placeholder="パスワード"
         type="password"
       />
       {isLoading ? (

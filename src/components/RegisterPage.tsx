@@ -30,12 +30,12 @@ const RegisterPage: React.FC = () => {
       <input
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        placeholder="ユーザー名"
+        placeholder="ユーザー名 半角英数字のみ"
       />
       <input
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="パスワード"
+        placeholder="パスワード 半角英数字のみ"
         type="password"
       />
       <button onClick={handleRegister}>登録</button>
