@@ -20,9 +20,16 @@ const Header: React.FC = () => {
             <Nav.Link as={NavLink} to="/post_new" end>
               Post New
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/logout">
-              Logout
-            </Nav.Link>
+
+            {isAuthenticated ? (
+              <Nav.Link as={NavLink} to="/logout">
+                Logout
+              </Nav.Link>
+            ) : (
+              <Nav.Link as={NavLink} to="/register" end>
+                Register
+              </Nav.Link>
+            )}
           </Nav>
           {isAuthenticated && (
             <Nav className="ms-auto">

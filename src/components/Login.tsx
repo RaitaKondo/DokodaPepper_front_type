@@ -4,10 +4,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthContext } from "./AuthContext";
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
   const { setIsAuthenticated, fetchUser } = useAuthContext();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -15,6 +16,7 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async () => {
     try {
+      setIsLoading(true);
       await api.post(
         "/api/login",
         { username, password },
@@ -41,15 +43,19 @@ const LoginPage: React.FC = () => {
       <input
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        placeholder="ユーザー名"
+        placeholder="ユーザー名 半角英数字のみ"
       />
       <input
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="パスワード"
+        placeholder="パスワード  半角英数字のみ"
         type="password"
       />
-      <button onClick={handleLogin}>ログイン</button>
+      {isLoading ? (
+        <p>ログイン中</p>
+      ) : (
+        <button onClick={handleLogin}>ログイン</button>
+      )}
     </div>
   );
 };

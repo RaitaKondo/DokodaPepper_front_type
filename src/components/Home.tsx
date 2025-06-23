@@ -202,7 +202,11 @@ const Home: React.FC = () => {
             ))}
         </select>
       </label>
-      {posts.length === 0 && <div>No Peppers...</div>}
+      {posts.length === 0 && (
+        <div>
+          <img src="/devImages/NoPeppers.png" alt="No Peppers..." />
+        </div>
+      )}
       <div className="card-body">
         <div className="container mt-4">
           {posts.length !== 0 && (

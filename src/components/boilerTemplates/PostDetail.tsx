@@ -3,9 +3,18 @@ import { Post, Comment } from "../types/Types";
 import { useEffect, useState } from "react";
 import api from "../../api/api";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
-import { Card, Container, Row, Col, Carousel, Button } from "react-bootstrap";
+import {
+  Card,
+  Container,
+  Row,
+  Col,
+  Carousel,
+  Button,
+  Alert,
+} from "react-bootstrap";
 import { useAuthContext } from "../AuthContext";
 import * as FaIcons from "react-icons/ai"; // ← これが重要！
+import axios from "axios";
 
 const containerStyle = {
   width: "100%",
@@ -47,6 +56,8 @@ const PostDetail: React.FC = () => {
   const [comments, setComments] = useState<Comment[]>([]);
 
   const [content, setContent] = useState<string>("");
+
+  const [message, setMessage] = useState<string | null>(null);
 
   const handleFound = () => {
     api
@@ -112,7 +123,25 @@ const PostDetail: React.FC = () => {
       setContent(""); // フォームをリセット
       fetchComment(); // 再取得
     } catch (err) {
-      console.error("投稿失敗:", err);
+      if (axios.isAxiosError(err)) {
+        if (err.response) {
+          // サーバーからのエラー（例：バリデーション、403など）
+          const errorMsg =
+            typeof err.response.data === "string"
+              ? err.response.data
+              : err.response.data.message || "投稿に失敗しました。";
+          setMessage(errorMsg);
+        } else if (err.request) {
+          // リクエストは送られたがレスポンスがない
+          setMessage("サーバーからの応答がありませんでした。");
+        } else {
+          // 何らかのaxios内エラー
+          setMessage("リクエスト処理中にエラーが発生しました。");
+        }
+      } else {
+        // axios以外のエラー（コードミスなど）
+        setMessage("予期せぬエラーが発生しました。");
+      }
     }
   };
 
@@ -210,6 +239,7 @@ const PostDetail: React.FC = () => {
                   </Button>
                 </div>
               </form>
+              {message && <Alert variant="info">{message}</Alert>}
             </div>
 
             <div

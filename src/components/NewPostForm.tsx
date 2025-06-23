@@ -5,6 +5,7 @@ import api from "../api/api";
 import { Container, Form, Button, Spinner, Alert } from "react-bootstrap";
 import ImageUploader from "./ImageUploader";
 import { usePrefectures } from "./PrefectureContext";
+import axios from "axios";
 
 const containerStyle = {
   width: "100%",
@@ -203,9 +204,27 @@ const NewPostForm: React.FC = () => {
       reset();
       setImages([]);
       setResetSignal(true); // プレビューを初期化
+      window.location.href = "/";
     } catch (err) {
-      console.error(err);
-      setMessage("投稿に失敗しました。");
+      if (axios.isAxiosError(err)) {
+        if (err.response) {
+          // サーバーからのエラー（例：バリデーション、403など）
+          const errorMsg =
+            typeof err.response.data === "string"
+              ? err.response.data
+              : err.response.data.message || "投稿に失敗しました。";
+          setMessage(errorMsg);
+        } else if (err.request) {
+          // リクエストは送られたがレスポンスがない
+          setMessage("サーバーからの応答がありませんでした。");
+        } else {
+          // 何らかのaxios内エラー
+          setMessage("リクエスト処理中にエラーが発生しました。");
+        }
+      } else {
+        // axios以外のエラー（コードミスなど）
+        setMessage("予期せぬエラーが発生しました。");
+      }
     } finally {
       setSubmitting(false);
       setResetSignal(false); // Signalを戻す
