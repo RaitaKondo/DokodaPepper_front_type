@@ -64,8 +64,23 @@ const PostDetail: React.FC = () => {
       .post(`/api/posts/${id}/found`)
       .then((res) => {
         const toggle = !foundIt;
+
         setFoundIt(toggle);
         setFoundCount((prev) => (toggle ? prev + 1 : prev - 1));
+
+        const postData = sessionStorage.getItem("posts");
+        if (!postData) return;
+
+        // JSONをパース
+        const posts: Post[] = JSON.parse(postData);
+
+        // 対象のpostを探して更新
+        const updatedPosts = posts.map((p) =>
+          p.postId === post?.postId ? { ...p, foundIt: !p.foundIt } : p
+        );
+
+        // 再度JSONとして保存
+        sessionStorage.setItem("posts", JSON.stringify(updatedPosts));
       })
       .catch((error) => (window.location.href = "/login?error=expired"));
   };
@@ -77,6 +92,20 @@ const PostDetail: React.FC = () => {
         const toggle = !reported;
         setReported(toggle);
         setReportedCount((prev) => (toggle ? prev + 1 : prev - 1));
+
+        const postData = sessionStorage.getItem("posts");
+        if (!postData) return;
+
+        // JSONをパース
+        const posts: Post[] = JSON.parse(postData);
+
+        // 対象のpostを探して更新
+        const updatedPosts = posts.map((p) =>
+          p.postId === post?.postId ? { ...p, reported: !p.reported } : p
+        );
+
+        // 再度JSONとして保存
+        sessionStorage.setItem("posts", JSON.stringify(updatedPosts));
       })
       .catch((error) => (window.location.href = "/login?error=expired"));
   };

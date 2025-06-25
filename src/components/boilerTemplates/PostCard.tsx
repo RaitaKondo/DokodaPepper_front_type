@@ -27,7 +27,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       <div className="d-flex flex-column align-items-center">
         {post.images.length > 0 && (
           <img
-            src={`${process.env.REACT_APP_API_URL}${post.images[0].imageUrl}`}
+            src={`${post.images[0].imageUrl}`}
             className="card-img-top img-fluid"
             alt="投稿画像"
             style={{ maxWidth: "100%", height: "200px", objectFit: "cover" }}

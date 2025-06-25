@@ -8,9 +8,11 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuthContext();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleRegister = async () => {
     try {
+      setIsLoading(true);
       await api.post(
         "/api/register",
         { username, password },
@@ -38,7 +40,11 @@ const RegisterPage: React.FC = () => {
         placeholder="パスワード 半角英数字のみ"
         type="password"
       />
-      <button onClick={handleRegister}>登録</button>
+      {isLoading ? (
+        <p>登録中...</p>
+      ) : (
+        <button onClick={handleRegister}>登録</button>
+      )}
     </div>
   );
 };

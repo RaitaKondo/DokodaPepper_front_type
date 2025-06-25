@@ -23,10 +23,12 @@ const Header: React.FC = () => {
                 Login
               </Nav.Link>
             )}
-            {isAuthenticated ?? (
+            {isAuthenticated ? (
               <Nav.Link as={NavLink} to="/post_new" end>
                 Post New
               </Nav.Link>
+            ) : (
+              <></>
             )}
 
             {isAuthenticated ? (
