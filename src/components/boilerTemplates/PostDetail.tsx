@@ -76,7 +76,15 @@ const PostDetail: React.FC = () => {
 
         // 対象のpostを探して更新
         const updatedPosts = posts.map((p) =>
-          p.postId === post?.postId ? { ...p, foundIt: !p.foundIt } : p
+          p.postId === post?.postId
+            ? {
+                ...p,
+                foundIt: toggle,
+                numberOfFoundIt: toggle
+                  ? p.numberOfFoundIt + 1
+                  : p.numberOfFoundIt - 1,
+              }
+            : p
         );
 
         // 再度JSONとして保存
@@ -101,7 +109,15 @@ const PostDetail: React.FC = () => {
 
         // 対象のpostを探して更新
         const updatedPosts = posts.map((p) =>
-          p.postId === post?.postId ? { ...p, reported: !p.reported } : p
+          p.postId === post?.postId
+            ? {
+                ...p,
+                reported: toggle,
+                numberOfReported: toggle
+                  ? p.numberOfReported + 1
+                  : p.numberOfReported - 1,
+              }
+            : p
         );
 
         // 再度JSONとして保存
@@ -218,7 +234,7 @@ const PostDetail: React.FC = () => {
                 <Carousel.Item key={img.id}>
                   <img
                     className="d-block w-100"
-                    src={`${process.env.REACT_APP_API_URL}${img.imageUrl}`}
+                    src={`${img.imageUrl}`}
                     alt={`Image ${img.sortOrder}`}
                     style={{
                       maxWidth: "100%",
