@@ -111,9 +111,6 @@ const Home: React.FC = () => {
     setRehydrated(true); // ★ すべて終わったらここで true にする
   }, []);
 
-  useEffect(() => {
-    console.log(posts);
-  }, [posts]);
   // page or selectedPrefId の変更時に再取得
   useEffect(() => {
     if (!rehydrated) return; // ★ 完了するまで待つ

@@ -141,7 +141,6 @@ const PostDetail: React.FC = () => {
     try {
       const res = await api.get(`/api/posts/${id}/comments`);
       setComments(res.data);
-      console.log(res.data);
     } catch (err) {
       console.log("コメント取得失敗：", err);
     }

@@ -1,46 +1,73 @@
-# Getting Started with Create React App
+# DokodaPepper Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+https://dokodapepper.onrender.com -サーバーのプラン上読み込みに時間がかかることがあります。 -都道府県が選択できない時はページをリロードしてください。
 
-## Available Scripts
+位置情報を活用した投稿共有アプリ「DokodaPepper」のフロントエンドリポジトリです。React（TypeScript）で構築され、バックエンドは [DokodaPepper_api](https://github.com/RaitaKondo/DokodaPepper_api) によって提供される REST API と連携します。
 
-In the project directory, you can run:
+## 🔧 主な機能
 
-### `npm start`
+- ユーザー登録・ログイン（セッション認証）
+- 投稿作成・編集・削除（画像付き）
+- 投稿に「見つけた！」・「通報」リアクション
+- 投稿へのコメント機能
+- 都道府県・市区町村による投稿フィルタ（Google Geocoding API による自動登録）
+- セッションストレージによる投稿データの効率的管理
+- レスポンシブデザイン対応
+- AWS S3 を利用した画像ストレージ
+- Google Maps API による位置情報処理
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 💠 技術スタック
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Frontend: React, TypeScript, Axios, Bootstrap
+- Backend: Spring Boot, PostgreSQL
+- その他: AWS S3, Google Geocoding API, Render.com (デプロイ)
 
-### `npm test`
+## 🚀 開発環境での起動方法
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+# 1. リポジトリをクローン
+git clone -b forDeploy https://github.com/RaitaKondo/DokodaPepper_front_type.git
+cd DokodaPepper_front_type
 
-### `npm run build`
+# 2. パッケージインストール
+npm install
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# 3. 環境変数ファイルを作成
+# 必要なAPIエンドポイントやキーを.envに記述
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# 4. 開発サーバー起動
+npm run dev
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🌐 本番環境
 
-### `npm run eject`
+アプリケーションは Render.com 上にデプロイされています。
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- フロントエンド: [https://dokodapepper.onrender.com](https://dokodapepper.onrender.com)
+- バックエンド: [DokodaPepper_api](https://github.com/RaitaKondo/DokodaPepper_api)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📁 ディレクトリ構成（要約版）
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+DokodaPepper_front_type/
+├── public/
+├── src/
+│   ├── components/
+│   └── api/
+├── .env
+├── .gitignore
+├── tsconfig.json
+├── package-lock.json
+├── package.json
+└── README.md
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## ✏️ 今後の改善予定
 
-## Learn More
+- 投稿の地図表示機能
+- ユーザープロフィール画面
+- 多言語対応（i18n）
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📋 ライセンス
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+このプロジェクトは [MIT License](LICENSE) のもとで公開されています。
